@@ -10,10 +10,40 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
-index b2a2b5c38caa..02f7fd0b0497 100644
+index b2a2b5c38caa..1b14b75b28b0 100644
 --- a/arch/arm/boot/dts/stm32f429.dtsi
 +++ b/arch/arm/boot/dts/stm32f429.dtsi
-@@ -758,7 +758,7 @@
+@@ -429,6 +429,9 @@
+ 			interrupts = <71>;
+ 			clocks = <&rcc 0 STM32F4_APB2_CLOCK(USART6)>;
+ 			status = "disabled";
++			dmas = <&dma2 1 5 0x400 0x0>,
++			       <&dma2 6 5 0x400 0x0>;
++			dma-names = "rx", "tx";
+ 		};
+ 
+ 		adc: adc@40012000 {
+@@ -672,6 +675,19 @@
+ 				};
+ 			};
+ 
++			usart6_pins_a: usart6@0 {
++				pins1 {
++					pinmux = <STM32F429_PG14_FUNC_USART6_TX>;
++					bias-disable;
++					drive-push-pull;
++					slew-rate = <0>;
++				};
++				pins2 {
++					pinmux = <STM32F429_PG9_FUNC_USART6_RX>;
++					bias-disable;
++				};
++			};
++
+ 			usbotg_fs_pins_a: usbotg_fs@0 {
+ 				pins {
+ 					pinmux = <STM32F429_PA10_FUNC_OTG_FS_ID>,
+@@ -758,7 +774,7 @@
  			i2c1_pins: i2c1@0 {
  				pins {
  					pinmux = <STM32F429_PB9_FUNC_I2C1_SDA>,
@@ -23,13 +53,27 @@ index b2a2b5c38caa..02f7fd0b0497 100644
  					drive-open-drain;
  					slew-rate = <3>;
 diff --git a/arch/arm/boot/dts/stm32f469-disco.dts b/arch/arm/boot/dts/stm32f469-disco.dts
-index 6ae1f037f3f0..9c90ec0130d5 100644
+index 75470c34b92c..cf9a17b85903 100644
 --- a/arch/arm/boot/dts/stm32f469-disco.dts
 +++ b/arch/arm/boot/dts/stm32f469-disco.dts
-@@ -125,6 +125,18 @@
+@@ -63,6 +63,7 @@
+ 
+ 	aliases {
+ 		serial0 = &usart3;
++		serial1 = &usart6;
+ 	};
+ 
+ 	soc {
+@@ -125,6 +126,24 @@
  	status = "okay";
  };
  
++&usart6 {
++	pinctrl-0 = <&usart6_pins_a>;
++	pinctrl-names = "default";
++	status = "okay";
++};
++
 +&i2c1 {
 +	pinctrl-0 = <&i2c1_pins>;
 +	pinctrl-names = "default";
