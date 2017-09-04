@@ -1,0 +1,50 @@
+From f6c121c8a4f25dec2a2d1edc26d0b13d1ee97ee9 Mon Sep 17 00:00:00 2001
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Fri, 1 Sep 2017 16:27:58 -0500
+Subject: [PATCH 2/2] stm32f469-disco: demo
+
+Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
+---
+ arch/arm/boot/dts/stm32f429.dtsi      |  2 +-
+ arch/arm/boot/dts/stm32f469-disco.dts | 12 ++++++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
+index b2a2b5c38caa..02f7fd0b0497 100644
+--- a/arch/arm/boot/dts/stm32f429.dtsi
++++ b/arch/arm/boot/dts/stm32f429.dtsi
+@@ -758,7 +758,7 @@
+ 			i2c1_pins: i2c1@0 {
+ 				pins {
+ 					pinmux = <STM32F429_PB9_FUNC_I2C1_SDA>,
+-						 <STM32F429_PB6_FUNC_I2C1_SCL>;
++						 <STM32F429_PB8_FUNC_I2C1_SCL>;
+ 					bias-disable;
+ 					drive-open-drain;
+ 					slew-rate = <3>;
+diff --git a/arch/arm/boot/dts/stm32f469-disco.dts b/arch/arm/boot/dts/stm32f469-disco.dts
+index 6ae1f037f3f0..9c90ec0130d5 100644
+--- a/arch/arm/boot/dts/stm32f469-disco.dts
++++ b/arch/arm/boot/dts/stm32f469-disco.dts
+@@ -125,6 +125,18 @@
+ 	status = "okay";
+ };
+ 
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++	clock-frequency = <100000>;
++
++	si7005@40 {
++		compatible = "si7005";
++		reg = <0x40>;
++	};
++};
++
+ &usbotg_fs {
+ 	dr_mode = "host";
+ 	pinctrl-0 = <&usbotg_fs_pins_a>;
+-- 
+2.14.1
+
