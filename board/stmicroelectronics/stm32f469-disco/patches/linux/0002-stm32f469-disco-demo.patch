@@ -1,0 +1,101 @@
+From 29c87ba1030505b537224d481549c9b697a3fe70 Mon Sep 17 00:00:00 2001
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Fri, 30 Mar 2018 11:06:41 -0500
+Subject: [PATCH 2/2] stm32f469-disco: demo
+
+Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
+---
+ arch/arm/boot/dts/stm32f4-pinctrl.dtsi | 17 ++++++++++++++++-
+ arch/arm/boot/dts/stm32f429.dtsi       |  3 +++
+ arch/arm/boot/dts/stm32f469-disco.dts  | 19 +++++++++++++++++++
+ 3 files changed, 38 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/stm32f4-pinctrl.dtsi b/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
+index ae94d86c53c4..785979e2ea30 100644
+--- a/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
+@@ -189,6 +189,21 @@
+ 				};
+ 			};
+ 
++			usart6_pins_a: usart6@0 {
++				pins1 {
++					//pinmux = <STM32F429_PG14_FUNC_USART6_TX>;
++					pinmux = <STM32_PINMUX('G', 14, AF8)>; /* USART6_TX */
++					bias-disable;
++					drive-push-pull;
++					slew-rate = <0>;
++				};
++				pins2 {
++					//pinmux = <STM32F429_PG9_FUNC_USART6_RX>;
++					pinmux = <STM32_PINMUX('G', 9, AF8)>; /* USART6_RX */
++					bias-disable;
++				};
++			};
++
+ 			usbotg_fs_pins_a: usbotg_fs@0 {
+ 				pins {
+ 					pinmux = <STM32_PINMUX('A', 10, AF10)>, /* OTG_FS_ID */
+@@ -275,7 +290,7 @@
+ 			i2c1_pins: i2c1@0 {
+ 				pins {
+ 					pinmux = <STM32_PINMUX('B', 9, AF4)>, /* I2C1_SDA */
+-						 <STM32_PINMUX('B', 6, AF4)>; /* I2C1_SCL */
++						 <STM32_PINMUX('B', 8, AF4)>; /* I2C1_SCL */
+ 					bias-disable;
+ 					drive-open-drain;
+ 					slew-rate = <3>;
+diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
+index 10099df8b73e..5f070877859b 100644
+--- a/arch/arm/boot/dts/stm32f429.dtsi
++++ b/arch/arm/boot/dts/stm32f429.dtsi
+@@ -460,6 +460,9 @@
+ 			interrupts = <71>;
+ 			clocks = <&rcc 0 STM32F4_APB2_CLOCK(USART6)>;
+ 			status = "disabled";
++			dmas = <&dma2 1 5 0x400 0x0>,
++			       <&dma2 6 5 0x400 0x0>;
++			dma-names = "rx", "tx";
+ 		};
+ 
+ 		adc: adc@40012000 {
+diff --git a/arch/arm/boot/dts/stm32f469-disco.dts b/arch/arm/boot/dts/stm32f469-disco.dts
+index c18acbe4cf4e..129d39094f3f 100644
+--- a/arch/arm/boot/dts/stm32f469-disco.dts
++++ b/arch/arm/boot/dts/stm32f469-disco.dts
+@@ -64,6 +64,7 @@
+ 
+ 	aliases {
+ 		serial0 = &usart3;
++		serial1 = &usart6;
+ 	};
+ 
+ 	soc {
+@@ -126,6 +127,24 @@
+ 	status = "okay";
+ };
+ 
++&usart6 {
++	pinctrl-0 = <&usart6_pins_a>;
++	pinctrl-names = "default";
++	status = "okay";
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++	clock-frequency = <100000>;
++
++	si7005@40 {
++		compatible = "si7005";
++		reg = <0x40>;
++	};
++};
++
+ &usbotg_fs {
+ 	dr_mode = "host";
+ 	pinctrl-0 = <&usbotg_fs_pins_a>;
+-- 
+2.16.2
+
