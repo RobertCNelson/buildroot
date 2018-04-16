@@ -11,16 +11,16 @@ cat > ${TARGET_DIR}/usr/bin/serial_esp.sh <<-__EOF__
 #!/bin/sh
 
 setup_stty () {
-    #stty -F /dev/ttyS1 115200 -icanon min 0 time 30
+    #stty -F /dev/ttySTM1 115200 -icanon min 0 time 30
     if [ ! -f /tmp/stty.setup ] ; then
         touch /tmp/stty.setup
-        stty -F /dev/ttyS1 115200
-        echo 'AT+LEDON' > /dev/ttyS1
+        stty -F /dev/ttySTM1 115200
+        echo 'AT+LEDON' > /dev/ttySTM1
         sleep 0.1
-        echo 'AT+RST' > /dev/ttyS1
-        echo 'Wait for reset (5 seconds)'
-        sleep 5
-        echo 'AT+LEDOFF' > /dev/ttyS1
+        echo 'AT+RST' > /dev/ttySTM1
+        echo 'Wait for reset (10 seconds)'
+        sleep 10
+        echo 'AT+LEDOFF' > /dev/ttySTM1
     fi
 }
 
@@ -40,26 +40,24 @@ grab_temp () {
 }
 
 send_data () {
-    echo 'AT+LEDON' > /dev/ttyS1
-    sleep 0.1
-    echo 'AT+CIPMUX=1' > /dev/ttyS1
-    sleep 0.5
-    echo 'AT+CIPSTART=4,"TCP","gfnd.rcn-ee.org",81' > /dev/ttyS1
-    sleep 0.5
-    echo 'AT+CIPSEND=4,34'  > /dev/ttyS1
-    sleep 0.5
-    #GET /stdevcon/ = 14
-    #'\$temp'=72.330=6
-    #F HTTP/1.1 = 10
-    #+4
-    echo "GET /stdevcon/'\$temp'F HTTP/1.1" > /dev/ttyS1
-    sleep 0.5
-    echo '' > /dev/ttyS1
-    sleep 0.5
-    echo 'AT+CIPCLOSE' > /dev/ttyS1
-    sleep 0.5
-    echo 'AT+LEDOFF' > /dev/ttyS1
-    sleep 0.1
+    echo 'AT+LEDON' > /dev/ttySTM1
+    sleep 0.2
+    echo 'AT' > /dev/ttySTM1
+    sleep 1
+    echo 'AT+CIPMUX=1' > /dev/ttySTM1
+    sleep 1
+    echo 'AT+CIPSTART=4,"TCP","gfnd.rcn-ee.org",81' > /dev/ttySTM1
+    sleep 1
+    echo 'AT+CIPSEND=4,32'  > /dev/ttySTM1
+    sleep 1
+    echo "GET /stdevcon?temp='\$temp'F"  > /dev/ttySTM1
+    sleep 1
+    echo 'AT+CIPCLOSE' > /dev/ttySTM1
+    sleep 1.5
+    echo 'AT' > /dev/ttySTM1
+    sleep 1.5
+    echo 'AT+LEDOFF' > /dev/ttySTM1
+    sleep 0.2
 }
 
 setup_stty
@@ -77,14 +75,14 @@ fi
 
 __EOF__
 
-#chmod +x ${TARGET_DIR}/usr/bin/serial_esp.sh
-#
-#cat > ${TARGET_DIR}/etc/init.d/S99demo <<-__EOF__
-##!/bin/sh
-#
-#/bin/sh /usr/bin/serial_esp.sh
-#__EOF__
+chmod +x ${TARGET_DIR}/usr/bin/serial_esp.sh
 
-#chmod +x ${TARGET_DIR}/etc/init.d/S99demo
+cat > ${TARGET_DIR}/etc/init.d/S99demo <<-__EOF__
+#!/bin/sh
+
+/bin/sh /usr/bin/serial_esp.sh
+__EOF__
+
+chmod +x ${TARGET_DIR}/etc/init.d/S99demo
 
 
