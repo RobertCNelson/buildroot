@@ -1,0 +1,60 @@
+From a291896635000209d8a3a72c4c6a3e3ab30dd29f Mon Sep 17 00:00:00 2001
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Thu, 31 Aug 2017 10:08:14 -0500
+Subject: [PATCH] stm32f746-disco-fixes
+
+Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
+---
+ configs/stm32f746-disco_defconfig | 3 ++-
+ include/configs/stm32f746-disco.h | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/configs/stm32f746-disco_defconfig b/configs/stm32f746-disco_defconfig
+index 261b180870..df501209e7 100644
+--- a/configs/stm32f746-disco_defconfig
++++ b/configs/stm32f746-disco_defconfig
+@@ -4,13 +4,13 @@ CONFIG_SYS_MALLOC_F_LEN=0xC00
+ CONFIG_STM32F7=y
+ CONFIG_TARGET_STM32F746_DISCO=y
+ CONFIG_DEFAULT_DEVICE_TREE="stm32f746-disco"
+-CONFIG_ENV_IS_NOWHERE=y
+ CONFIG_BOOTDELAY=3
+ CONFIG_USE_BOOTARGS=y
+ CONFIG_BOOTARGS="console=ttyS0,115200 earlyprintk consoleblank=0 ignore_loglevel"
+ # CONFIG_DISPLAY_CPUINFO is not set
+ # CONFIG_DISPLAY_BOARDINFO is not set
+ CONFIG_BOARD_EARLY_INIT_F=y
++# CONFIG_SPL_OS_BOOT is not set
+ CONFIG_HUSH_PARSER=y
+ CONFIG_SYS_PROMPT="U-Boot > "
+ CONFIG_AUTOBOOT_KEYED=y
+@@ -28,6 +28,7 @@ CONFIG_CMD_DNS=y
+ CONFIG_CMD_LINK_LOCAL=y
+ CONFIG_CMD_TIMER=y
+ CONFIG_OF_CONTROL=y
++CONFIG_ENV_IS_NOWHERE=y
+ CONFIG_NET_RANDOM_ETHADDR=y
+ CONFIG_NETCONSOLE=y
+ CONFIG_CLK=y
+diff --git a/include/configs/stm32f746-disco.h b/include/configs/stm32f746-disco.h
+index 470722d693..0c14cfb308 100644
+--- a/include/configs/stm32f746-disco.h
++++ b/include/configs/stm32f746-disco.h
+@@ -54,12 +54,12 @@
+ #define CONFIG_SYS_MALLOC_LEN		(1 * 1024 * 1024)
+ 
+ #define CONFIG_BOOTCOMMAND						\
+-	"run bootcmd_romfs"
++	"sf probe; run bootcmd_romfs"
+ 
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	"bootargs_romfs=uclinux.physaddr=0x08180000 root=/dev/mtdblock0\0" \
+ 	"bootcmd_romfs=setenv bootargs ${bootargs} ${bootargs_romfs};" \
+-	"bootm 0x08044000 - 0x08042000\0"
++	"bootm 0x90000000 - 0x90010000\0"
+ 
+ 
+ /*
+-- 
+2.14.1
+
