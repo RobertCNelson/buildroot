@@ -77,12 +77,12 @@ __EOF__
 
 chmod +x ${TARGET_DIR}/usr/bin/serial_esp.sh
 
-#cat > ${TARGET_DIR}/etc/init.d/S99demo <<-__EOF__
-##!/bin/sh
-#
-#/bin/sh /usr/bin/serial_esp.sh
-#__EOF__
-#
-#chmod +x ${TARGET_DIR}/etc/init.d/S99demo
+cat > ${TARGET_DIR}/etc/init.d/S99demo <<-__EOF__
+#!/bin/sh
+
+/bin/sh /usr/bin/serial_esp.sh
+__EOF__
+
+chmod +x ${TARGET_DIR}/etc/init.d/S99demo
 
 
